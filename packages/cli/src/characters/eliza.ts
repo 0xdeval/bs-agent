@@ -10,7 +10,6 @@ const baseCharacter: Character = {
   plugins: ['@elizaos/plugin-sql', '@elizaos/plugin-bootstrap'],
   secrets: {},
   settings: {
-    avatar: 'https://i.ibb.co.com/Lh0zL6qs/Color-BS-symbol.png',
     mcp: {
       servers: {
         'mcp-server': {
@@ -22,7 +21,7 @@ const baseCharacter: Character = {
             'run',
             '@blockscout/mcp-server',
             '--key',
-            process.env.BS_SMITHERY_KEY || '',
+            process.env.SMITHERY_KEY || '',
             '--profile',
             'damp-galliform-wM6LcR',
           ],

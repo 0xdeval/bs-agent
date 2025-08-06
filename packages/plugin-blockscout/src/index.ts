@@ -1,34 +1,34 @@
-import type { Plugin } from "@elizaos/core";
-import { type IAgentRuntime, logger } from "@elizaos/core";
-import { z } from "zod";
-import { BlockscoutService } from "./service/BlockscoutService";
-import { getAppsInfoAction } from "./actions/getAppsInfo";
-import { appsProvider } from "./providers/fetchApps";
-import { appsRatingsProvider } from "./providers/fetchAppsRatings";
-import { getSupportedMarketplaceAction } from "./actions/getSupportedMarketplace";
+import type { Plugin } from '@elizaos/core';
+import { type IAgentRuntime, logger } from '@elizaos/core';
+import { z } from 'zod';
+import { BlockscoutService } from './service/BlockscoutService';
+import { getAppsInfoAction } from './actions/getAppsInfo';
+import { appsProvider } from './providers/fetchApps';
+import { appsRatingsProvider } from './providers/fetchAppsRatings';
+import { getSupportedMarketplaceAction } from './actions/getSupportedMarketplace';
 
 const configSchema = z.object({
   API_KEY: z
     .string()
-    .min(1, "API key is required")
+    .min(1, 'API key is required')
     .optional()
     .transform((val) => {
       if (!val) {
-        console.warn("Warning: API_KEY is not provided");
+        console.warn('Warning: API_KEY is not provided');
       }
       return val;
     }),
 });
 
 const blockscoutPlugin: Plugin = {
-  name: "blockscout-plugin",
-  description: "A plugin to interact with Blockscout API",
+  name: 'blockscout-plugin',
+  description: 'A plugin to interact with Blockscout API',
   priority: 9999999,
   config: {
     API_KEY: process.env.API_KEY,
   },
   async init(config: Record<string, string>) {
-    logger.info("*** Initializing starter plugin ***");
+    logger.info('*** Initializing Blockscout plugin ***');
     try {
       const validatedConfig = await configSchema.parseAsync(config);
 
@@ -39,7 +39,7 @@ const blockscoutPlugin: Plugin = {
     } catch (error) {
       if (error instanceof z.ZodError) {
         throw new Error(
-          `Invalid plugin configuration: ${error.errors.map((e) => e.message).join(", ")}`
+          `Invalid plugin configuration: ${error.errors.map((e) => e.message).join(', ')}`
         );
       }
       throw error;
@@ -50,14 +50,14 @@ const blockscoutPlugin: Plugin = {
   // Routes that can be exposed externally
   routes: [
     {
-      name: "api-status",
-      path: "/api/status",
-      type: "GET",
+      name: 'api-status',
+      path: '/api/status',
+      type: 'GET',
       handler: async (req: any, res: any, runtime: IAgentRuntime) => {
         res.json({
-          status: "healthy",
+          status: 'healthy',
           timestamp: new Date().toISOString(),
-          plugin: "plugin-blockscout",
+          plugin: 'plugin-blockscout',
         });
       },
     },
@@ -67,22 +67,19 @@ const blockscoutPlugin: Plugin = {
       async (payload) => {
         const MAX_CONVERSATION_LENGTH = 6;
 
-        console.log(
-          "Checking if a user hit a limit of messages. User: ",
-          payload.message.entityId
-        );
+        console.log('Checking if a user hit a limit of messages. User: ', payload.message.entityId);
 
         const memories = await payload.runtime.getMemories({
           // roomId: payload.message.roomId,
           entityId: payload.message.entityId,
           count: MAX_CONVERSATION_LENGTH + 1,
           unique: false,
-          tableName: "messages",
+          tableName: 'messages',
           agentId: payload.runtime.agentId,
         });
 
-        console.log("User memories:", memories);
-        console.log("User memories length:", memories.length);
+        console.log('User memories:', memories);
+        console.log('User memories length:', memories.length);
 
         const conversationLength = memories.length;
 
@@ -94,7 +91,7 @@ const blockscoutPlugin: Plugin = {
           payload.runtime.setParticipantUserState(
             payload.message.roomId,
             payload.message.agentId,
-            "MUTED"
+            'MUTED'
           );
         }
 
@@ -125,21 +122,21 @@ const blockscoutPlugin: Plugin = {
     ],
     VOICE_MESSAGE_RECEIVED: [
       async (params) => {
-        logger.info("VOICE_MESSAGE_RECEIVED event received");
+        logger.info('VOICE_MESSAGE_RECEIVED event received');
         // print the keys
         logger.info(Object.keys(params));
       },
     ],
     WORLD_CONNECTED: [
       async (params) => {
-        logger.info("WORLD_CONNECTED event received");
+        logger.info('WORLD_CONNECTED event received');
         // print the keys
         logger.info(Object.keys(params));
       },
     ],
     WORLD_JOINED: [
       async (params) => {
-        logger.info("WORLD_JOINED event received");
+        logger.info('WORLD_JOINED event received');
         // print the keys
         logger.info(Object.keys(params));
       },
