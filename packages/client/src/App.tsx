@@ -27,6 +27,7 @@ import { Button } from './components/ui/button';
 import CreateGroupPage from './routes/group-new';
 import AgentSettingsRoute from './routes/agent-settings';
 import clientLogger from '@/lib/logger';
+import { InfoBanner } from './components/InfoBanner';
 
 // Create a query client with optimized settings
 const queryClient = new QueryClient({
@@ -101,10 +102,10 @@ function AppContent() {
   return (
     <TooltipProvider delayDuration={0}>
       <SidebarProvider>
-        <AppSidebar refreshHomePage={refreshHomePage} />
+        {/* <AppSidebar refreshHomePage={refreshHomePage} /> */}
         <SidebarInset className="h-screen flex flex-col md:ml-72 overflow-hidden">
           {/* Mobile menu button */}
-          <div className="md:hidden absolute top-4 left-4 z-50">
+          {/* <div className="md:hidden absolute top-4 left-4 z-50">
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" data-testid="mobile-menu-button">
@@ -116,10 +117,15 @@ function AppContent() {
                 <AppSidebar isMobile={true} refreshHomePage={refreshHomePage} />
               </SheetContent>
             </Sheet>
-          </div>
+          </div> */}
           <div className="flex w-full justify-center pt-16 md:pt-0 flex-shrink-0">
             <div className="w-full md:max-w-4xl">
               <ConnectionErrorBanner />
+            </div>
+          </div>
+          <div className="flex w-full justify-center pt-16 md:pt-0 flex-shrink-0">
+            <div className="w-full md:max-w-4xl">
+              <InfoBanner title="It's a test" subtitle="You can ask agent 6 different questions to test the functionality" />
             </div>
           </div>
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
@@ -141,10 +147,10 @@ function AppContent() {
                   </div>
                 }
               />
-              <Route path="settings/:agentId" element={<AgentSettingsRoute />} />
-              <Route path="group/new" element={<CreateGroupPage />} />
-              <Route path="agents/new" element={<AgentCreatorRoute />} />
-              <Route
+              {/* <Route path="settings/:agentId" element={<AgentSettingsRoute />} /> */}
+              {/* <Route path="group/new" element={<CreateGroupPage />} /> */}
+              {/* <Route path="agents/new" element={<AgentCreatorRoute />} /> */}
+              {/* <Route
                 path="/create"
                 element={
                   <div className="flex w-full justify-center px-4 sm:px-6 overflow-y-auto">
@@ -153,8 +159,8 @@ function AppContent() {
                     </div>
                   </div>
                 }
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/logs"
                 element={
                   <div className="flex w-full justify-center">
@@ -166,7 +172,7 @@ function AppContent() {
                     </div>
                   </div>
                 }
-              />
+              /> */}
               <Route
                 path="group/:channelId"
                 element={
@@ -175,7 +181,7 @@ function AppContent() {
                   </div>
                 }
               />
-              <Route
+              {/* <Route
                 path="settings/"
                 element={
                   <div className="flex w-full justify-center overflow-y-auto">
@@ -184,7 +190,7 @@ function AppContent() {
                     </div>
                   </div>
                 }
-              />
+              /> */}
               {/* Catch-all route for 404 errors */}
               <Route path="*" element={<NotFound />} />
             </Routes>

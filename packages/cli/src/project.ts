@@ -147,7 +147,7 @@ export async function loadProject(dir: string): Promise<Project> {
 
       // Create a fallback project with the default Eliza character
       // Use deterministic UUID based on character name to match runtime behavior
-      const defaultCharacterName = 'Eliza (Default)';
+      const defaultCharacterName = 'Blockscout agent';
       const elizaCharacter = getElizaCharacter(); // Get the filtered character based on env vars
       const defaultAgent: ProjectAgent = {
         character: {

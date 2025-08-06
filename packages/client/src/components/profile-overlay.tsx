@@ -113,9 +113,8 @@ export default function ProfileOverlay({ isOpen, onClose, agentId }: ProfileOver
                     )}
                   </div>
                   <div
-                    className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-background ${
-                      isActive ? 'bg-emerald-500' : 'bg-muted-foreground'
-                    }`}
+                    className={`absolute bottom-1 right-1 w-4 h-4 rounded-full border-2 border-background ${isActive ? 'bg-emerald-500' : 'bg-muted-foreground'
+                      }`}
                   />
                 </div>
                 <div className="flex flex-col justify-center mr-4">
@@ -213,7 +212,7 @@ export default function ProfileOverlay({ isOpen, onClose, agentId }: ProfileOver
         </CardContent>
 
         <CardFooter className="flex justify-between items-center p-4 border-t">
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             {isActive ? (
               <StopAgentButton agent={agent} showIcon={true} size="default" className="h-9" />
             ) : (
@@ -263,7 +262,7 @@ export default function ProfileOverlay({ isOpen, onClose, agentId }: ProfileOver
                 <p>Configure agent settings</p>
               </TooltipContent>
             </Tooltip>
-          </div>
+          </div> */}
 
           {isActive && (
             <Button variant="default" className="h-9" onClick={() => navigate(`/chat/${agent.id}`)}>

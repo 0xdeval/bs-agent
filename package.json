@@ -77,6 +77,9 @@
     "utf-8-validate"
   ],
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.7",
+    "@electric-sql/pglite-tools": "^0.2.12",
+    "@elizaos/plugin-mcp": "^1.0.7",
     "helmet": "^8.1.0"
   }
 }

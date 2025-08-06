@@ -33,10 +33,12 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onChat }) => {
   const agentIdForNav = agent.id;
   const agentName = agent.name || 'Unnamed Agent';
 
+  console.log('agent info', agent);
+
   const description = Array.isArray(agent.bio)
     ? agent.bio.filter(Boolean).join(' ').trim()
     : (typeof agent.bio === 'string' && agent.bio.trim()) ||
-      'Engages with all types of questions and conversations';
+    'Engages with all types of questions and conversations';
   const isActive = agent.status === CoreAgentStatus.ACTIVE;
   const isStarting = isAgentStarting(agent.id);
   const isStopping = isAgentStopping(agent.id);
@@ -101,7 +103,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onChat }) => {
     >
       <CardContent className="p-0 relative h-full">
         {/* Toggle Switch - positioned absolutely in top-right */}
-        <div className="absolute top-3 right-3">
+        {/* <div className="absolute top-3 right-3">
           <Switch
             checked={isActive}
             onCheckedChange={(checked) => {
@@ -118,7 +120,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onChat }) => {
                 : 'data-[state=unchecked]:!bg-gray-500/80'
             )}
           />
-        </div>
+        </div> */}
 
         <div className="flex flex-col justify-between h-full">
           <div className="flex items-center gap-4 p-2 h-[90%]">
@@ -143,7 +145,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onChat }) => {
           <div className="border-t border-muted" />
           <div className="flex items-center justify-between py-1 px-2">
             {/* Settings button */}
-            <Button
+            {/* <Button
               variant="ghost"
               size="sm"
               onClick={(e) => {
@@ -153,7 +155,7 @@ const AgentCard: React.FC<AgentCardProps> = ({ agent, onChat }) => {
               className="h-8 w-8 p-0 hover:bg-muted/50 cursor-pointer"
             >
               <Settings className="h-4 w-4 text-muted-foreground" />
-            </Button>
+            </Button> */}
 
             {/* New Chat button - ghost variant */}
             <Button

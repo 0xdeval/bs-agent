@@ -307,10 +307,10 @@ export default function Chat({
   // Convert AgentWithStatus to Agent, ensuring required fields have defaults
   const targetAgentData: Agent | undefined = agentDataResponse?.data
     ? ({
-        ...agentDataResponse.data,
-        createdAt: agentDataResponse.data.createdAt || Date.now(),
-        updatedAt: agentDataResponse.data.updatedAt || Date.now(),
-      } as Agent)
+      ...agentDataResponse.data,
+      createdAt: agentDataResponse.data.createdAt || Date.now(),
+      updatedAt: agentDataResponse.data.updatedAt || Date.now(),
+    } as Agent)
     : undefined;
 
   const { handleDelete: handleDeleteAgent, isDeleting: isDeletingAgent } =
@@ -1092,7 +1092,7 @@ export default function Chat({
       return (
         <div className="flex items-center justify-between mb-4 p-3">
           <div className="flex items-center gap-3 min-w-0 flex-1">
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm" className="py-6 px-2 flex-shrink-0">
                   <div className="relative flex-shrink-0">
@@ -1166,7 +1166,7 @@ export default function Chat({
                   Delete Agent
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </div>
 
           <div className="flex gap-1 sm:gap-2 items-center flex-shrink-0">
@@ -1216,8 +1216,8 @@ export default function Chat({
                                 <span className="text-xs text-muted-foreground">
                                   {moment(
                                     channel.metadata?.createdAt ||
-                                      channel.updatedAt ||
-                                      channel.createdAt
+                                    channel.updatedAt ||
+                                    channel.createdAt
                                   ).fromNow()}
                                 </span>
                               </div>
@@ -1274,7 +1274,7 @@ export default function Chat({
                   dropdownButtonClassName="rounded-r-[12px] h-9"
                 />
 
-                <Tooltip>
+                {/* <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       className="w-9 h-9 rounded-[12px]"
@@ -1291,7 +1291,7 @@ export default function Chat({
                   <TooltipContent side="bottom">
                     <p>{showSidebar ? 'Close SidePanel' : 'Open SidePanel'}</p>
                   </TooltipContent>
-                </Tooltip>
+                </Tooltip> */}
               </div>
             )}
           </div>

@@ -86,14 +86,14 @@ export default function Home() {
                         {activeAgentsCount}
                       </span>
                     </TabsTrigger>
-                    <TabsTrigger
+                    {/* <TabsTrigger
                       value="groups"
                       className="rounded-full data-[state=active]:border-b-0 data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:font-bold cursor-pointer text-lg py-1"
                     >
                       Groups
-                    </TabsTrigger>
+                    </TabsTrigger> */}
                   </TabsList>
-                  <Button
+                  {/* <Button
                     variant="ghost"
                     onClick={() => {
                       if (activeTab === 'agents') {
@@ -106,7 +106,7 @@ export default function Home() {
                   >
                     <Plus className="w-4 h-4" />
                     {activeTab === 'agents' ? 'Create New Agent' : 'Create New Group'}
-                  </Button>
+                  </Button> */}
                 </div>
                 <Separator />
               </div>
@@ -140,7 +140,7 @@ export default function Home() {
                         return bActive - aActive;
                       })
                       .map((agent) => {
-                        return (
+                        return agent.status === AgentStatus.ACTIVE && (
                           <AgentCard
                             key={agent.id}
                             agent={agent}
