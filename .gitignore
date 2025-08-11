@@ -2,6 +2,9 @@ node_modules
 bun.lock
 /out
 
+./bun.lock
+eliza_db
+
 .env
 .env.production
 .env.local
