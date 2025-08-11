@@ -125,7 +125,7 @@ function AppContent() {
           </div>
           <div className="flex w-full justify-center pt-16 md:pt-0 flex-shrink-0">
             <div className="w-full md:max-w-4xl">
-              <InfoBanner title="It's a test" subtitle="You can ask agent 6 different questions to test the functionality" />
+              <InfoBanner title="The chat is in beta now" subtitle="You can ask an agent 6 different questions to test the functionality. To get more information, check the link below" urlLink="https://blockscout.notion.site/Blockscout-agent-24c3d73641f8806f843ef81fafdbcfab?pvs=74" />
             </div>
           </div>
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">

@@ -5,9 +5,10 @@ export interface InfoBannerProps {
     className?: string;
     title?: string;
     subtitle?: string;
+    urlLink?: string;
 }
 
-export function InfoBanner({ className, title, subtitle }: InfoBannerProps) {
+export function InfoBanner({ className, title, subtitle, urlLink }: InfoBannerProps) {
 
     let infoTitle = title || 'Info';
     let infoDescription = subtitle || 'This is a test info banner.';
@@ -42,7 +43,7 @@ export function InfoBanner({ className, title, subtitle }: InfoBannerProps) {
                     </p>
                     <div className="mt-2 flex space-x-4">
                         <a
-                            href="https://eliza.how"
+                            href={urlLink}
                             target="_blank"
                             rel="noopener noreferrer"
                             className={cn(
