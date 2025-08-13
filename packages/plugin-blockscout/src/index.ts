@@ -21,8 +21,9 @@ const configSchema = z.object({
 });
 
 const blockscoutPlugin: Plugin = {
-  name: 'blockscout-plugin',
-  description: 'A plugin to interact with Blockscout API',
+  name: 'plugin-blockscout',
+  description:
+    'A plugin to retrieve information about dapps, web3 marketplaces and other dapp-related topics using Blockscout API and other resources',
   priority: 9999999,
   config: {
     API_KEY: process.env.API_KEY,

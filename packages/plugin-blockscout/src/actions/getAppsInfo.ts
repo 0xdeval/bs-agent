@@ -26,7 +26,7 @@ export const getAppsInfoAction: Action = {
     'PROTOCOL_RECOMMENDATIONS',
   ],
   description:
-    'Parses user intent and provides personalized dApp recommendations based on use case, chain preference, and other criteria',
+    'Recommend the most relevant dapp based on a user intent, user case, and a chain preference using Blockscout API and other resources',
 
   validate: async (_runtime: IAgentRuntime, message: Memory, state: State): Promise<boolean> => {
     const text = message.content.text.toLowerCase();

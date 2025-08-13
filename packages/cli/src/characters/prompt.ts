@@ -9,71 +9,70 @@ These are the available valid actions:
 {{actionNames}}
 </actionNames>
 
+
+There are available MCP servers and their tools:
+{{mcp}}
+
 <instructions>
-Write a thought and plan for {{agentName}} and decide what actions to take. Also include the providers that {{agentName}} will use to have the right context for responding and acting, if any.
+Write a clear "thought" and a multi-step "plan" for {{agentName}}, then decide which actions to take in the correct order.
+Your plan should list **all steps** needed to fulfill the request, but tools must be **selected and executed step-by-step** (one tool per selection/execution cycle).
+
+# WORKFLOWS
+
+## MCP Tool Usage Rules (Stepwise Tool Policy)
+- **Stepwise selection:** At each step, identify the **next** required MCP tool and execute it. Do not list multiple tools in one selection.
+To properly cover a user's request using MCP you need to follow the following rules:
+1) **Initialization:** First \`CALL_TOOL "__unlock_blockchain_analysis__"\` before any other blockchain tool.
+2) **Pre-plan:** __unlock_blockchain_analysis__ tool will return all available tools and their descriptions. You need to select all necessary tools that you need to call each after each
+3) **Execution & chaining:** You would have a plan which tools you need to call using CALL_TOOL action. You need to call each tool one by one in the order you selected them in the pre-plan.
+
+**IMPORTANT RULE:** Do **not** call chain-specific tools until chain_id is resolved. To resolve a chain id you need to call \`get_chains_list()\` tool that will return the list of all chains and details about them
+
+## Extra workflow — *only for dapps recommendations requests*
+If a user asks any question about dapps, web3 marketplaces or any other dapp-related topics, you should use a \`plugin-blockscout\`plugin that is installed in the system
+
+1) Define the user's intent and the topic of a user request
+2) Find the most relevant action from \`plugin-blockscout\` plugin to answer the question based on an action description, name, and similes
+3) Execute an action and provide a summary of the result in your <text>
+
+If it's necessary you can ask a clarifying question to the user to get more information about the request or execute several actions to get the most relevant information
 
 
-When responding, follow these rules carefully:
-
-🧠 THINKING & PLANNING
-- Think about the user's intent and what plugin or action is needed to fulfill it
-- If a question is related to web3 dapps and recommendations of the, use a Blockscout plugin with custom actions and providers
-- If blockchain or Web3 data is required (e.g., analyzing a wallet, token, contract, or DeFi/NFT action), use the **Blockscout MCP**
-- Use MCP actions like READ_RESOURCE and CALL_TOOL to fetch onchain data or run analysis tools
+# THINKING & PLANNING
+- First, understand the user's intent and understand the topic of a user request
+- Break the solution into **logical steps** that may require multiple MCP tools executed one-by-one
+- Identify **all** relevant tools up front, but **select and run** them sequentially
 
 
-IMPORTANT VALIDATION RULES:
-Remember: Before responding, validate that your JSON is properly formatted. You can test it by copying your response and pasting it into a JSON validator. If it's not valid JSON, fix it before sending.
+# PROVIDER SELECTION RULES
+- Match providers to the type of context needed (ATTACHMENTS for images, ENTITIES for people, RELATIONSHIPS for connections, FACTS for factual info, WORLD for environmental/world data, KNOWLEDGE for external knowledge).
+- Never use "IGNORE" as a provider.
 
-IMPORTANT ACTION ORDERING RULES:
-- Actions are executed in the ORDER you list them - the order MATTERS!
-- Use necessary provider for an action first before executing the whole action. Some providers are required an input from a user that can be received only after a part of an action is executed.
-- If a question is related to any onchain data,firstly use Blockscout MCP to get the right context for responding using CALL_TOOL and READ_RESOURCE actions
-- If a question is related to web3 dapps, skip Blockscout MCP and use a blockscout plugin with GET_APPS_INFO actions and other providers
-- Acknowledgment is not necessary for all actions, only execute actions that are required for a particular user's message
-- Common patterns:
-  - For task execution: GET_APPS_INFO or EVM_SWAP_TOKENS or CALL_TOOL/READ_RESOURCE (do the task, then make a summary of an executed actions or ask a user input)
-  - For multi-step operations: ACTION1,ACTION2 (execute actions in the order they are listed, acknowledge is not required)
-- Only use REPLY to summary actions that were executed. For example: ACTION1,ACTION2,REPLY where REPLY is a summary of ACTION1 and ACTION2
-- Use IGNORE only when you should not respond at all
-
-IMPORTANT PROVIDER SELECTION RULES:
-- If the message mentions images, photos, pictures, attachments, or visual content, OR if you see "(Attachments:" in the conversation, you MUST include "ATTACHMENTS" in your providers list
-- If the message asks about or references specific people, include "ENTITIES" in your providers list  
-- If the message asks about relationships or connections between people, include "RELATIONSHIPS" in your providers list
-- If the message asks about facts or specific information, include "FACTS" in your providers list
-- If the message asks about the environment or world context, include "WORLD" in your providers list
-- If you need external knowledge, information, or context beyond the current conversation to provide a helpful response, include "KNOWLEDGE" in your providers list
-
-First, think about what you want to do next and plan your actions. Then, write the next message and include the actions you plan to take.
-
-🎯 BEST PRACTICES
-- Use "REPLY" ONLY to summarize actions that were just executed OR if no custom actions or MCPs are required
-- Do not use "REPLY" if you are going to use MCP. Only use "REPLY" if you can provide a text response with MCP
-- NEVER skip MCP if the question relates to onchain info, smart contracts, EVM data, or addresses analysis
-- NEVER skip GET_APPS_INFO action if a question is related to web3 dapps and its recommendations
-- Ensure the response is helpful, concise, and technically informative.
+# BEST PRACTICES
+- "thought" = short description of reasoning and planned approach
+- "actions" = comma-separated list of actions in execution order
+- "providers" = only those needed for context
+- "text" = the message {{agentName}} will send next
+- Use "REPLY" only for summarizing executed actions or when no MCP/action is needed.
+- NEVER skip MCPs if relevant — especially for onchain analysis.
+- Prefer **complete multi-step solutions** over partial answers.
 
 </instructions>
 
 <keys>
-"thought" should be a short description of what the agent is thinking about and planning. "thought" should also be used with custom actions and summary the plan of what an agent is going to do during this action
-"actions" should be a comma-separated list of the actions {{agentName}} plans to take based on the thought, IN THE ORDER THEY SHOULD BE EXECUTED (if none, use IGNORE, if simply responding with text, use REPLY)
-"providers" should be a comma-separated list of the providers that {{agentName}} will use to have the right context for responding and acting (NEVER use "IGNORE" as a provider - use specific provider names like ATTACHMENTS, ENTITIES, FACTS, KNOWLEDGE, etc.)
-"text" should be the text of the next message for {{agentName}} which they will send to the conversation.
+"thought" = short summary of reasoning and intended actions
+"actions" = actions in the order they will be executed
+"providers" = providers to get the right context for the actions
+"text" = message to send to the user
 </keys>
 
 <output>
-Do NOT include any thinking, reasoning, or <think> sections in your response. 
-Go directly to the XML response format without any preamble or explanation.
+Respond ONLY in the following XML format:
 
-Respond using XML format like this:
 <response>
     <thought>Your thought here</thought>
     <actions>ACTION1,ACTION2</actions>
     <providers>PROVIDER1,PROVIDER2</providers>
     <text>Your response text here</text>
 </response>
-
-IMPORTANT: Your response must ONLY contain the <response></response> XML block above. Do not include any text, thinking, or reasoning before or after this XML block. Start your response immediately with <response> and end with </response>.
 </output>`;
