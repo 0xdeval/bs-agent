@@ -2,7 +2,8 @@ import type { Plugin } from '@elizaos/core';
 import { type IAgentRuntime, logger } from '@elizaos/core';
 import { z } from 'zod';
 import { BlockscoutService } from './service/BlockscoutService';
-import { getAppsInfoAction } from './actions/getAppsInfo';
+import { recommendAppsAction } from './actions/recommendApps';
+import { getAppInfoAction } from './actions/getAppInfo';
 import { appsProvider } from './providers/fetchApps';
 import { appsRatingsProvider } from './providers/fetchAppsRatings';
 import { getSupportedMarketplaceAction } from './actions/getSupportedMarketplace';
@@ -46,9 +47,7 @@ const blockscoutPlugin: Plugin = {
       throw error;
     }
   },
-  // Fallback models to call if other models are not available
   models: {},
-  // Routes that can be exposed externally
   routes: [
     {
       name: 'api-status',
@@ -71,7 +70,6 @@ const blockscoutPlugin: Plugin = {
         console.log('Checking if a user hit a limit of messages. User: ', payload.message.entityId);
 
         const memories = await payload.runtime.getMemories({
-          // roomId: payload.message.roomId,
           entityId: payload.message.entityId,
           count: MAX_CONVERSATION_LENGTH + 1,
           unique: false,
@@ -79,8 +77,7 @@ const blockscoutPlugin: Plugin = {
           agentId: payload.runtime.agentId,
         });
 
-        console.log('User memories:', memories);
-        console.log('User memories length:', memories.length);
+        console.log('User total messages length:', memories.length);
 
         const conversationLength = memories.length;
 
@@ -95,56 +92,26 @@ const blockscoutPlugin: Plugin = {
             'MUTED'
           );
         }
-
-        // await payload.callback({
-        //   text: `I received your message after a receiving a MESSAGE_RECEIVED event! Current user conversation length is ${conversationLength}`,
-        // });
-
-        // payload.runtime.setParticipantUserState(
-        //   payload.message.roomId,
-        //   payload.message.agentId,
-        //   "MUTED"
-        // );
-
-        // console.log("Memories:", memories);
-        // const db = payload.runtime.db;
-
-        // const dbUsers = await db.select().from(userTable);
-        // console.log("DB users:", dbUsers);
-
-        // Additional processing...
       },
-      // async (params) => {
-
-      //   logger.info("MESSAGE_RECEIVED event received");
-
-      //   logger.info(Object.keys(params));
-      // },
     ],
     VOICE_MESSAGE_RECEIVED: [
       async (params) => {
         logger.info('VOICE_MESSAGE_RECEIVED event received');
-        // print the keys
-        logger.info(Object.keys(params));
       },
     ],
     WORLD_CONNECTED: [
       async (params) => {
         logger.info('WORLD_CONNECTED event received');
-        // print the keys
-        logger.info(Object.keys(params));
       },
     ],
     WORLD_JOINED: [
       async (params) => {
         logger.info('WORLD_JOINED event received');
-        // print the keys
-        logger.info(Object.keys(params));
       },
     ],
   },
   services: [BlockscoutService],
-  actions: [getAppsInfoAction, getSupportedMarketplaceAction],
+  actions: [recommendAppsAction, getAppInfoAction, getSupportedMarketplaceAction],
   providers: [appsProvider, appsRatingsProvider],
 };
 

@@ -1,23 +1,25 @@
 import { Action, HandlerCallback, IAgentRuntime, Memory, State } from '@elizaos/core';
 import { logger } from '@elizaos/core';
-import { extractJsonFromMarkdownBlock, retrieveDataBasedOnPrompt } from '../lib/utils';
+import { retrieveDataBasedOnPrompt } from '../lib/utils';
+import { parseUserIntentPrompt } from '../lib/prompts/usersIntents';
+import { mapDappsByCategoriesPrompt } from '../lib/prompts/appsPrompts';
+
 import {
-  mapDappsByCategoriesPrompt,
-  parseUserIntentPrompt,
   recommendationFallbackPrompt,
   recommendDappsPrompt,
-} from '../lib/prompts';
-import { Dapp, Rating, Recommendation } from '../types/dapps';
+} from '../lib/prompts/appsRecommendationPrompts';
+import { Rating, Recommendation } from '../types/dapps';
 import { UserIntent } from '../types/userData';
 import { filterDappsByCategories, retrieveFinalRecommendation } from '../lib/marketplace/utils';
 import { combineDappWithRatings } from '../lib/marketplace/utils';
-import { formatRecommendationsForDisplay } from '../lib/marketplace/formatRecommendations';
+import { formatRecommendationsForDisplay } from '../lib/formatters/formatRecommendations';
+import { isRunRecommendActionPrompt } from '../lib/prompts/isRunRecommendAction';
 
 // To fetch information from custom providers use the following format:
 // state.data.providers.appsProvider.data
 // where appsProvider is a name of a custom provider. Data, Values, Text inside it what you're returning in a provider
-export const getAppsInfoAction: Action = {
-  name: 'GET_APPS_INFO',
+export const recommendAppsAction: Action = {
+  name: 'RECOMMEND_APPS',
   similes: [
     'DAPP_RECOMMENDATIONS',
     'DAPP_SUGGESTIONS',
@@ -29,23 +31,17 @@ export const getAppsInfoAction: Action = {
     'Recommend the most relevant dapp based on a user intent, user case, and a chain preference using Blockscout API and other resources',
 
   validate: async (_runtime: IAgentRuntime, message: Memory, state: State): Promise<boolean> => {
-    const text = message.content.text.toLowerCase();
+    const { isRecommendAction } = (await retrieveDataBasedOnPrompt(
+      isRunRecommendActionPrompt(message.content.text),
+      _runtime,
+      state,
+      true,
+      true
+    )) as { isRecommendAction: boolean };
 
-    // Check if user is asking for dApp recommendations
-    const isDappQuery =
-      text.includes('dapp') ||
-      text.includes('defi') ||
-      text.includes('protocol') ||
-      text.includes('app') ||
-      text.includes('recommend') ||
-      text.includes('suggest') ||
-      text.includes('best') ||
-      text.includes('swap') ||
-      text.includes('lend') ||
-      text.includes('yield') ||
-      text.includes('trade');
+    logger.info('Is recommend action should be run: ', isRecommendAction);
 
-    return isDappQuery;
+    return isRecommendAction;
   },
 
   handler: async (
@@ -68,12 +64,11 @@ export const getAppsInfoAction: Action = {
       // Filter to get only user messages (exclude agent messages)
       const lastUserMessage = recentUserMessages.find((mem) => mem.entityId !== runtime.agentId);
 
-      // TODO: Take only 2-3 recent message from a user
       const parsedUserIntent = (await retrieveDataBasedOnPrompt(
         parseUserIntentPrompt(lastUserMessage.content.text),
         runtime,
         state,
-        false,
+        true,
         true
       )) as UserIntent;
 
@@ -99,7 +94,7 @@ export const getAppsInfoAction: Action = {
       if (!chainId) {
         callback({
           text: 'To make a recommendation more clear, please, provide a chain name for a use case',
-          actions: ['GET_APPS_INFO'],
+          actions: ['RECOMMEND_APPS'],
           source: message.content.source,
         });
 
@@ -108,7 +103,7 @@ export const getAppsInfoAction: Action = {
 
       callback({
         text: `Give me a second, I'm retrieving data for you based on your input:\n\nUse case: ${parsedUserIntent.useCase}\nChain: ${parsedUserIntent.chain}`,
-        actions: ['GET_APPS_INFO'],
+        actions: ['RECOMMEND_APPS'],
         source: message.content.source,
       });
 
@@ -182,7 +177,7 @@ export const getAppsInfoAction: Action = {
         callback({
           text: formattedRecommendation,
           markdown: true,
-          actions: ['GET_APPS_INFO'],
+          actions: ['RECOMMEND_APPS'],
           source: message.content.source,
         });
       } else {
@@ -198,7 +193,7 @@ export const getAppsInfoAction: Action = {
 
           callback({
             text: summaryResult,
-            actions: ['GET_APPS_INFO'],
+            actions: ['RECOMMEND_APPS'],
             source: message.content.source,
           });
         }
@@ -206,7 +201,7 @@ export const getAppsInfoAction: Action = {
 
       return true;
     } catch (error) {
-      logger.error('Error in GET_APPS_INFO action:', error);
+      logger.error('Error in RECOMMEND_APPS action:', error);
     }
   },
   examples: [
@@ -236,7 +231,7 @@ export const getAppsInfoAction: Action = {
         name: 'Eliza',
         content: {
           text: 'The best dapp to borrow on tokens on Arbitrum is: ',
-          actions: ['GET_APPS_INFO'],
+          actions: ['RECOMMEND_APPS'],
           providers: ['appsProvider', 'appsRatingsProvider'],
         },
       },
@@ -252,7 +247,7 @@ export const getAppsInfoAction: Action = {
         name: 'Eliza',
         content: {
           text: 'The best bridge on Ethereum is: ',
-          actions: ['GET_APPS_INFO'],
+          actions: ['RECOMMEND_APPS'],
           providers: ['appsProvider', 'appsRatingsProvider'],
         },
       },
@@ -268,7 +263,7 @@ export const getAppsInfoAction: Action = {
         name: 'Eliza',
         content: {
           text: 'Good games on Optimism are: ',
-          actions: ['GET_APPS_INFO'],
+          actions: ['RECOMMEND_APPS'],
           providers: ['appsProvider', 'appsRatingsProvider'],
         },
       },

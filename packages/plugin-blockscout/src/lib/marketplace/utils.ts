@@ -1,11 +1,5 @@
-import { logger } from "@elizaos/core";
-import {
-  Dapp,
-  DappWithRating,
-  Rating,
-  Recommendation,
-} from "../../types/dapps";
-import { MarketplaceDapp } from "../../types/dapps";
+import { Dapp, DappWithRating, Rating, Recommendation } from '../../types/dapps';
+import { MarketplaceDapp } from '../../types/dapps';
 
 export const filterDapps = (dapps: MarketplaceDapp[]): Dapp[] => {
   return dapps.map((dapp) => ({
@@ -29,12 +23,7 @@ export const getUniqueCategories = (dapps: Dapp[]): string[] => {
   return Array.from(new Set(dapps.flatMap((dapp) => dapp.categories)));
 };
 
-export const filterDappsByCategories = (
-  dapps: Dapp[],
-  categories: string[]
-): Dapp[] => {
-  logger.info("Categories to filter by: ", categories);
-
+export const filterDappsByCategories = (dapps: Dapp[], categories: string[]): Dapp[] => {
   return dapps.filter((dapp) => {
     return dapp.categories.some((category) =>
       categories.map((c) => c.toLowerCase()).includes(category.toLowerCase())
@@ -50,14 +39,10 @@ export const retrieveFinalRecommendation = (
   byRatingCount: Array<{ dapp: Dapp; rank: number; reason: string }>;
   overall: Array<{ dapp: Dapp; rank: number; reason: string }>;
 } => {
-  // Helper function to process recommendations
   const processRecommendations = (
     recommendationArray: { rank: number; id: string; reason: string }[]
   ) => {
-    const recommendationMap = new Map<
-      string,
-      { rank: number; reason: string }
-    >();
+    const recommendationMap = new Map<string, { rank: number; reason: string }>();
     recommendationArray.forEach((rec) => {
       recommendationMap.set(rec.id.toLowerCase(), {
         rank: rec.rank,
@@ -86,10 +71,7 @@ export const retrieveFinalRecommendation = (
   };
 };
 
-export const combineDappWithRatings = (
-  dapps: Dapp[],
-  ratings: Rating[]
-): DappWithRating[] => {
+export const combineDappWithRatings = (dapps: Dapp[], ratings: Rating[]): DappWithRating[] => {
   const ratingMap = new Map<string, { rating: number; count: number }>();
   ratings.forEach((rating) => {
     ratingMap.set(rating.appId, {
@@ -115,4 +97,16 @@ export const formatRecommendation = (recommendation: Recommendation) => {
     byRatingCount: recommendation.by_rating_count,
     overall: recommendation.overall,
   };
+};
+
+export const findAppInfoById = (dapps: Dapp[], ratings: Rating[], appId: string) => {
+  const appDetails = dapps.find((dapp) => dapp.id === appId);
+
+  if (!appDetails) {
+    return null;
+  }
+
+  const appRating = ratings.find((rating) => rating.appId === appId);
+
+  return { ...appDetails, rating: appRating?.rating, ratingCount: appRating?.count };
 };
